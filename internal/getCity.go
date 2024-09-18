@@ -2,14 +2,11 @@ package internal
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 )
 
 func GetState(state string) (string, error) {
-	fmt.Println("Get all called")
-
 	http, err := http.Get("https://mensa.barfuss.email/state/" + state)
 	if err != nil {
 		return "", err

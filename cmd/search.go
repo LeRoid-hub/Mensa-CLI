@@ -8,7 +8,9 @@ import (
 	"strings"
 
 	"github.com/LeRoid-hub/Mensa-CLI/internal"
+	"github.com/fatih/color"
 	"github.com/manifoldco/promptui"
+	"github.com/rodaine/table"
 	"github.com/spf13/cobra"
 )
 
@@ -55,6 +57,8 @@ to quickly create a Cobra application.`,
 			return
 		}
 
+		selectedCity := result
+
 		mensen, err := internal.GetMensen(result)
 		if err != nil {
 			fmt.Println("Error fetching data")
@@ -74,6 +78,8 @@ to quickly create a Cobra application.`,
 			return
 		}
 
+		selectedMensa := result
+
 		prompt = promptui.Select{
 			Label: "Do you want to see the menu or save the mensa to your favorites?",
 			Items: []string{"menu", "favorites"},
@@ -89,12 +95,25 @@ to quickly create a Cobra application.`,
 		fmt.Printf("You choose %q\n", result)
 
 		if result == "menu" {
-			menu, err := internal.GetMenu(result)
+			data, err := internal.GetMenu(selectedCity, selectedMensa)
 			if err != nil {
 				fmt.Println("Error fetching data")
 			}
+			headerFmt := color.New(color.FgGreen, color.Underline).SprintfFunc()
+			columnFmt := color.New(color.FgYellow).SprintfFunc()
 
-			fmt.Println(menu)
+			tbl := table.New("Offering", "Dish", "Price")
+			tbl.WithHeaderFormatter(headerFmt).WithFirstColumnFormatter(columnFmt)
+
+			for _, day := range data.Days {
+				for _, menu := range day.Menu {
+					for _, meal := range menu.Meal {
+						tbl.AddRow(menu.Name, meal.Name, meal.Price)
+					}
+				}
+			}
+
+			tbl.Print()
 		}
 
 		if result == "favorites" {
