@@ -5,7 +5,10 @@ package cmd
 
 import (
 	"fmt"
+	"strings"
 
+	"github.com/LeRoid-hub/Mensa-CLI/internal"
+	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
 )
 
@@ -20,7 +23,84 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("search called")
+		prompt := promptui.Select{
+			Label: "Select Day",
+			Items: []string{"baden-wuerttemberg", "bayern", "berlin", "brandenburg", "bremen",
+				"hamburg", "hessen", "mecklenburg-vorpommern", "niedersachsen", "nordrhein-westfalen", "rheinland-pfalz", "saarland", "sachsen", "sachsen-anhalt", "schleswig-holstein", "thueringen"},
+		}
+
+		_, result, err := prompt.Run()
+
+		if err != nil {
+			fmt.Printf("Prompt failed %v\n", err)
+			return
+		}
+
+		cities, err := internal.GetState(result)
+		if err != nil {
+			fmt.Println("Error fetching data")
+		}
+
+		city := strings.Split(cities, ",")
+
+		prompt = promptui.Select{
+			Label: "Select City",
+			Items: city,
+		}
+
+		_, result, err = prompt.Run()
+
+		if err != nil {
+			fmt.Printf("Prompt failed %v\n", err)
+			return
+		}
+
+		mensen, err := internal.GetMensen(result)
+		if err != nil {
+			fmt.Println("Error fetching data")
+		}
+
+		mensa := strings.Split(mensen, ",")
+
+		prompt = promptui.Select{
+			Label: "Select Mensa",
+			Items: mensa,
+		}
+
+		_, result, err = prompt.Run()
+
+		if err != nil {
+			fmt.Printf("Prompt failed %v\n", err)
+			return
+		}
+
+		prompt = promptui.Select{
+			Label: "Do you want to see the menu or save the mensa to your favorites?",
+			Items: []string{"menu", "favorites"},
+		}
+
+		_, result, err = prompt.Run()
+
+		if err != nil {
+			fmt.Printf("Prompt failed %v\n", err)
+			return
+		}
+
+		fmt.Printf("You choose %q\n", result)
+
+		if result == "menu" {
+			menu, err := internal.GetMenu(result)
+			if err != nil {
+				fmt.Println("Error fetching data")
+			}
+
+			fmt.Println(menu)
+		}
+
+		if result == "favorites" {
+			// viper
+		}
+
 	},
 }
 
