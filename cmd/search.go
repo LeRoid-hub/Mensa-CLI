@@ -12,6 +12,7 @@ import (
 	"github.com/manifoldco/promptui"
 	"github.com/rodaine/table"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // searchCmd represents the search command
@@ -112,7 +113,9 @@ var searchCmd = &cobra.Command{
 		}
 
 		if result == "favorites" {
-			// viper
+			favorites := viper.Get("favorites").([]string)
+			favorites = append(favorites, selectedCity+"/"+selectedMensa)
+			viper.Set("favorites", favorites)
 		}
 
 	},

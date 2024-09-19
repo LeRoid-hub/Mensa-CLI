@@ -34,6 +34,10 @@ func Execute() {
 
 func init() {
 	cobra.OnInitialize(initConfig)
+
+	setDefaults()
+
+	viper.SafeWriteConfig()
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
@@ -48,6 +52,11 @@ func init() {
 	rootCmd.CompletionOptions.DisableDefaultCmd = true
 }
 
+func setDefaults() {
+	viper.SetDefault("Server", "https://mensa.barfuss.email")
+	viper.SetDefault("favorites", []string{})
+}
+
 func initConfig() {
 	if cfgFile != "" {
 		viper.SetConfigFile(cfgFile)
@@ -60,6 +69,7 @@ func initConfig() {
 		viper.SetConfigName(".Mensa-CLI")
 	}
 
+	viper.SetEnvPrefix("MENSA")
 	viper.AutomaticEnv()
 
 	if err := viper.ReadInConfig(); err == nil {
