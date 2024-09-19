@@ -115,7 +115,10 @@ var searchCmd = &cobra.Command{
 		if result == "favorites" {
 			favorites := viper.Get("favorites").([]string)
 			favorites = append(favorites, selectedCity+"/"+selectedMensa)
+			fmt.Println("Added " + selectedCity + "/" + selectedMensa + " to your favorites")
 			viper.Set("favorites", favorites)
+			fmt.Println(viper.Get("favorites"))
+			viper.SafeWriteConfig()
 		}
 
 	},
