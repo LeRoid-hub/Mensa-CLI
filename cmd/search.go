@@ -91,7 +91,7 @@ var searchCmd = &cobra.Command{
 		}
 
 		if result == "menu" {
-			data, err := internal.GetMenu(selectedCity, selectedMensa)
+			data, err := internal.GetSearchMenu(selectedCity, selectedMensa)
 			if err != nil {
 				fmt.Println("Error fetching data")
 			}
@@ -113,12 +113,19 @@ var searchCmd = &cobra.Command{
 		}
 
 		if result == "favorites" {
-			favorites := viper.Get("favorites").([]string)
-			favorites = append(favorites, selectedCity+"/"+selectedMensa)
+			favorites := viper.Get("favorites").([]interface{})
+
+			s := make([]string, len(favorites))
+			for i, v := range favorites {
+				s[i] = v.(string)
+			}
+
+			s = append(s, selectedCity+"/"+selectedMensa)
+			viper.Set("favorites", s)
+
 			fmt.Println("Added " + selectedCity + "/" + selectedMensa + " to your favorites")
-			viper.Set("favorites", favorites)
 			fmt.Println(viper.Get("favorites"))
-			viper.SafeWriteConfig()
+			viper.WriteConfig()
 		}
 
 	},

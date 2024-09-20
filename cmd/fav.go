@@ -5,8 +5,10 @@ package cmd
 
 import (
 	"fmt"
-	"strings"
 
+	"github.com/LeRoid-hub/Mensa-CLI/internal"
+	"github.com/fatih/color"
+	"github.com/rodaine/table"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -18,13 +20,37 @@ var favCmd = &cobra.Command{
 	Long: `Retrieves the favorite mensa menus for the current day.
 	You can add mensas to your favorites using the search command.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		favorites := viper.GetStringSlice("favorites")
-		if len(favorites) == 0 {
-			fmt.Println("You have no favorites")
-			return
-		}
+		favorites := viper.Get("favorites").([]interface{})
 
-		fmt.Println("Your favorites: " + strings.Join(favorites, ", "))
+		s := make([]string, len(favorites))
+		for i, v := range favorites {
+			s[i] = v.(string)
+		}
+		for i := 0; i < len(s); i++ {
+			data, err := internal.GetMenu(s[i])
+			if err != nil {
+				fmt.Println("Error fetching data")
+			}
+			headerFmt := color.New(color.FgGreen, color.Underline).SprintfFunc()
+			columnFmt := color.New(color.FgYellow).SprintfFunc()
+
+			tbl := table.New("Offering", "Dish", "Price")
+			tbl.WithHeaderFormatter(headerFmt).WithFirstColumnFormatter(columnFmt)
+
+			color.Green("Mensa: %s", data.Name)
+
+			for _, day := range data.Days {
+				for _, menu := range day.Menu {
+					for _, meal := range menu.Meal {
+						tbl.AddRow(menu.Name, meal.Name, meal.Price)
+					}
+				}
+			}
+
+			tbl.Print()
+
+			fmt.Println()
+		}
 
 	},
 }

@@ -4,7 +4,6 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -53,8 +52,9 @@ func init() {
 }
 
 func setDefaults() {
+	favorites := []string{}
 	viper.SetDefault("Server", "https://mensa.barfuss.email")
-	viper.SetDefault("favorites", []string{})
+	viper.SetDefault("favorites", favorites)
 }
 
 func initConfig() {
@@ -73,7 +73,7 @@ func initConfig() {
 	viper.AutomaticEnv()
 
 	if err := viper.ReadInConfig(); err == nil {
-		fmt.Println("Using config file:", viper.ConfigFileUsed())
+		//fmt.Println("Using config file:", viper.ConfigFileUsed())
 	}
 
 }
