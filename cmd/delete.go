@@ -6,7 +6,9 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // deleteCmd represents the delete command
@@ -15,7 +17,35 @@ var deleteCmd = &cobra.Command{
 	Short: "Deletes a favorite mensa",
 	Long:  `Returns a list of your favorite mensas and prompts you to select one to delete.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("delete called")
+		favorites := viper.Get("favorites").([]interface{})
+
+		s := make([]string, len(favorites))
+		for i, v := range favorites {
+			s[i] = v.(string)
+		}
+
+		prompt := promptui.Select{
+			Label: "Select Mensa to delete",
+			Items: s,
+		}
+
+		_, result, err := prompt.Run()
+
+		if err != nil {
+			fmt.Printf("Prompt failed %v\n", err)
+			return
+		}
+
+		for i := 0; i < len(s); i++ {
+			if s[i] == result {
+				s = append(s[:i], s[i+1:]...)
+				break
+			}
+		}
+
+		viper.Set("favorites", s)
+		viper.WriteConfig()
+
 	},
 }
 

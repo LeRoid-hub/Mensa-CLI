@@ -21,14 +21,11 @@ var favCmd = &cobra.Command{
 	You can add mensas to your favorites using the search command.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		favorites := viper.Get("favorites").([]interface{})
-		fmt.Println(favorites)
 
 		s := make([]string, len(favorites))
 		for i, v := range favorites {
 			s[i] = v.(string)
 		}
-		fmt.Println(s, len(s), s[0])
-
 		for i := 0; i < len(s); i++ {
 			data, err := internal.GetMenu(s[i])
 			if err != nil {
