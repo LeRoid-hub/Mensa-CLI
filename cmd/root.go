@@ -53,8 +53,9 @@ func init() {
 }
 
 func setDefaults() {
+	favorites := []string{}
 	viper.SetDefault("Server", "https://mensa.barfuss.email")
-	viper.SetDefault("favorites", []string{})
+	viper.SetDefault("favorites", favorites)
 }
 
 func initConfig() {

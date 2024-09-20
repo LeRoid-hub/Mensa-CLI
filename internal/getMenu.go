@@ -9,8 +9,8 @@ import (
 	"github.com/LeRoid-hub/Mensa-CLI/models"
 )
 
-func GetMenu(city string, mensa string) (models.Mensa, error) {
-	http, err := http.Get("https://mensa.barfuss.email/mensa/" + city + "/" + mensa)
+func GetMenu(mensa string) (models.Mensa, error) {
+	http, err := http.Get("https://mensa.barfuss.email/mensa/" + mensa)
 	if err != nil {
 		return models.Mensa{}, err
 	}
@@ -30,4 +30,8 @@ func GetMenu(city string, mensa string) (models.Mensa, error) {
 	}
 
 	return data, nil
+}
+
+func GetSearchMenu(city string, mensa string) (models.Mensa, error) {
+	return GetMenu(city + "/" + mensa)
 }
