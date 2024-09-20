@@ -1,4 +1,5 @@
 # Mensa-CLI
+Works with [Mensa-API](https://github.com/LeRoid-hub/Mensa-API).
 
 ## Install
 
