@@ -7,10 +7,12 @@ import (
 	"net/http"
 
 	"github.com/LeRoid-hub/Mensa-CLI/models"
+	"github.com/spf13/viper"
 )
 
 func GetMenu(mensa string) (models.Mensa, error) {
-	http, err := http.Get("https://mensa.barfuss.email/mensa/" + mensa)
+	server := viper.Get("Server").(string)
+	http, err := http.Get(server + "/mensa/" + mensa)
 	if err != nil {
 		return models.Mensa{}, err
 	}

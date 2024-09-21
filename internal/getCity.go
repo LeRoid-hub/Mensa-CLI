@@ -4,10 +4,13 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+
+	"github.com/spf13/viper"
 )
 
 func GetState(state string) (string, error) {
-	http, err := http.Get("https://mensa.barfuss.email/state/" + state)
+	server := viper.Get("Server").(string)
+	http, err := http.Get(server + "/state/" + state)
 	if err != nil {
 		return "", err
 	}

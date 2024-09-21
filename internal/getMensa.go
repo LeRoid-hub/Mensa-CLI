@@ -4,10 +4,13 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+
+	"github.com/spf13/viper"
 )
 
 func GetMensen(city string) (string, error) {
-	http, err := http.Get("https://mensa.barfuss.email/city/" + city)
+	server := viper.Get("Server").(string)
+	http, err := http.Get(server + "/city/" + city)
 	if err != nil {
 		return "", err
 	}
